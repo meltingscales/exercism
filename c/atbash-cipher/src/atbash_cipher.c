@@ -2,22 +2,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 static char *ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 static int MAX_ALPHA_POS = 25; //26 total letters in ALPHABET
+
+bool isLowercase(char c)
+{
+  return (c > 'a' && c <= 'z');
+}
+
+bool isUppercase(char c)
+{
+  return (c > 'A' && c <= 'Z');
+}
+
+bool isAlphabetic(char c)
+{
+  return isLowercase(c) || isUppercase(c);
+}
 
 // Given a character, ensure it is lowercase.
 char ensureLowercase(char c)
 {
 
   // If 'c' is uppercase A-Z
-  if (c > 'A' && c <= 'Z')
+  if (isUppercase(c))
   {
     return c + (abs('a' - 'A'));
-    // Move `c` up by the positive difference
-    // between the capital and lowercase letters
+    // Move `c` up by the positive difference between the capital and lowercase letters
   }
 
+  // Return 'c' unchanged if it's either not valid or already lowercase.
   return c;
 }
 
@@ -49,16 +65,44 @@ char transposeCharAtbash(char c)
   return ALPHABET[transposedidx];
 }
 
-char *atbash_encode(const char *input) { return "lol"; }
+char *atbash_encode(const char *input)
+{
+  int WORK_SIZE = 1024;
+  char *work = calloc(WORK_SIZE, sizeof(char));
 
-char *atbash_decode(const char *input) { return "lol"; }
+  for (int i = 0; ((i < strlen(input)) && (i < WORK_SIZE)); i++)
+  {
+    int work_idx = 0;
 
-int main(int argc, char *argv[])
+    char c = input[i];
+    c = ensureLowercase(c);
+
+    if (isAlphabetic(c)) //we only care about alphabetic characters
+    {
+      c = transposeCharAtbash(c);
+      work[work_idx] = c;
+      work_idx += 1; //only increment work_idx if we find an alphabetic character. 
+    }
+  }
+
+  return work;
+}
+
+char *atbash_decode(const char *input)
+{
+  return input;
+}
+
+int main() //int argc, char *argv[])
 {
 
-  char foo = transposeCharAtbash('z');
+  printf("%c\n", transposeCharAtbash('a'));
+  printf("%c\n", transposeCharAtbash('b'));
+  printf("%c\n", transposeCharAtbash('c'));
+  printf("%c\n", transposeCharAtbash('d'));
+  printf("%c\n", transposeCharAtbash('e'));
 
-  printf("%c\n", foo);
+  char *result = atbash_encode("abc ABC Peepee Poopoo xx yy __ zz");
 
   printf("lol\n");
 }
