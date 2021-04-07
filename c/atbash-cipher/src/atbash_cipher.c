@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <stdbool.h>
 
 static char *ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -9,12 +10,12 @@ static int MAX_ALPHA_POS = 25; //26 total letters in ALPHABET
 
 bool isLowercase(char c)
 {
-  return (c > 'a' && c <= 'z');
+  return (c >= 'a' && c <= 'z');
 }
 
 bool isUppercase(char c)
 {
-  return (c > 'A' && c <= 'Z');
+  return (c >= 'A' && c <= 'Z');
 }
 
 bool isAlphabetic(char c)
@@ -46,7 +47,8 @@ char transposeCharAtbash(char c)
   {
     if (ALPHABET[i] == c)
     {
-      // This needs to have 25 subtracted from it and then normalized to be positive, to find the character we should have.
+      // This needs to have 25 subtracted from it and then normalized to be positive,
+      // to find the character we should have.
       foundidx = i;
       break;
     }
@@ -67,6 +69,7 @@ char transposeCharAtbash(char c)
 
 char *atbash_encode(const char *input)
 {
+
   int WORK_SIZE = 1024;
   char *work = calloc(WORK_SIZE, sizeof(char));
 
@@ -76,13 +79,14 @@ char *atbash_encode(const char *input)
 
     char c = input[i];
     c = ensureLowercase(c);
+    // printf("c = '%c', alphabetic: %d\n",c,isAlphabetic(c));
 
     if (isAlphabetic(c)) //we only care about alphabetic characters
     {
       char transformed = transposeCharAtbash(c);
       work[work_idx] = transformed;
-      printf("tx '%c' at [%2d] = '%c'\n",c,work_idx,transformed);
-      work_idx += 1; //only increment work_idx if we find an alphabetic character. 
+      // printf("tx '%c' at [%2d] = '%c'\n", c, work_idx, transformed);
+      work_idx += 1; //only increment work_idx if we find an alphabetic character.
     }
   }
 
@@ -91,25 +95,44 @@ char *atbash_encode(const char *input)
 
 char *atbash_decode(const char *input)
 {
-  return input;
+  return atbash_encode(input);
+}
+
+void test()
+{
+
+  assert(transposeCharAtbash('a') == 'z');
+  assert(transposeCharAtbash('b') == 'y');
+  assert(transposeCharAtbash('c') == 'x');
+  assert(transposeCharAtbash('d') == 'w');
+  assert(transposeCharAtbash('e') == 'v');
+
+  char *encoded;
+
+  encoded = atbash_encode("");
+  assert(strcmp(
+             encoded,
+             "") == 0);
+  free(encoded);
+
+
+  encoded=atbash_encode("abc");
+  assert(strcmp(
+             encoded,
+             "zyx") == 0);
+  free(encoded);
+
+  encoded = atbash_encode("!!gsv !!jfrxp?#? yildm >ulc!");
+  assert(strcmp(
+             encoded,
+             "thequickbrownfox") == 0);
+  free(encoded);
+
 }
 
 int main() //int argc, char *argv[])
 {
 
-  // printf("%c\n", transposeCharAtbash('a'));
-  // printf("%c\n", transposeCharAtbash('b'));
-  // printf("%c\n", transposeCharAtbash('c'));
-  // printf("%c\n", transposeCharAtbash('d'));
-  // printf("%c\n", transposeCharAtbash('e'));
+  test();
 
-  // char* mystr = "abc ABC Peepee Poopoo xx yy __ zz";
-  // char* mystr = "the QUICK brown FOX!";
-  char* mystr = "gsv jfrxp yildm ulc!";
-
-  char *result = atbash_encode(mystr);
-  printf("%s\n",result);
-  free(result);
-
-  printf("lol\n");
 }
