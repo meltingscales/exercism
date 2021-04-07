@@ -60,7 +60,7 @@ char transposeCharAtbash(char c)
   }
 
   int transposedidx = abs(foundidx - MAX_ALPHA_POS);
-  printf("transposedidx = %d\n", transposedidx);
+  // printf("transposedidx = %d\n", transposedidx);
 
   return ALPHABET[transposedidx];
 }
@@ -70,17 +70,18 @@ char *atbash_encode(const char *input)
   int WORK_SIZE = 1024;
   char *work = calloc(WORK_SIZE, sizeof(char));
 
+  int work_idx = 0;
   for (int i = 0; ((i < strlen(input)) && (i < WORK_SIZE)); i++)
   {
-    int work_idx = 0;
 
     char c = input[i];
     c = ensureLowercase(c);
 
     if (isAlphabetic(c)) //we only care about alphabetic characters
     {
-      c = transposeCharAtbash(c);
-      work[work_idx] = c;
+      char transformed = transposeCharAtbash(c);
+      work[work_idx] = transformed;
+      printf("tx '%c' at [%2d] = '%c'\n",c,work_idx,transformed);
       work_idx += 1; //only increment work_idx if we find an alphabetic character. 
     }
   }
@@ -96,13 +97,19 @@ char *atbash_decode(const char *input)
 int main() //int argc, char *argv[])
 {
 
-  printf("%c\n", transposeCharAtbash('a'));
-  printf("%c\n", transposeCharAtbash('b'));
-  printf("%c\n", transposeCharAtbash('c'));
-  printf("%c\n", transposeCharAtbash('d'));
-  printf("%c\n", transposeCharAtbash('e'));
+  // printf("%c\n", transposeCharAtbash('a'));
+  // printf("%c\n", transposeCharAtbash('b'));
+  // printf("%c\n", transposeCharAtbash('c'));
+  // printf("%c\n", transposeCharAtbash('d'));
+  // printf("%c\n", transposeCharAtbash('e'));
 
-  char *result = atbash_encode("abc ABC Peepee Poopoo xx yy __ zz");
+  // char* mystr = "abc ABC Peepee Poopoo xx yy __ zz";
+  // char* mystr = "the QUICK brown FOX!";
+  char* mystr = "gsv jfrxp yildm ulc!";
+
+  char *result = atbash_encode(mystr);
+  printf("%s\n",result);
+  free(result);
 
   printf("lol\n");
 }
