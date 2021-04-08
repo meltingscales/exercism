@@ -67,7 +67,7 @@ char transposeCharAtbash(char c)
   return ALPHABET[transposedidx];
 }
 
-char *atbash_encode(const char *input)
+char *atbash_encode_decode(const char *input, bool encoding)
 {
 
   int WORK_SIZE = 1024;
@@ -83,19 +83,31 @@ char *atbash_encode(const char *input)
 
     if (isAlphabetic(c)) //we only care about alphabetic characters
     {
+
+      // if we're encoding, then every 5 spaces, add a space
+      if (encoding && (work_idx > 0) && ((work_idx % 5) == 0))
+      {
+        work[work_idx] = ' ';
+        work_idx++;
+      }
       char transformed = transposeCharAtbash(c);
       work[work_idx] = transformed;
       // printf("tx '%c' at [%2d] = '%c'\n", c, work_idx, transformed);
-      work_idx += 1; //only increment work_idx if we find an alphabetic character.
+      work_idx++; //only increment work_idx if we find an alphabetic character.
     }
   }
 
   return work;
 }
 
+char *atbash_encode(const char *input)
+{
+  return atbash_encode_decode(input, true);
+}
+
 char *atbash_decode(const char *input)
 {
-  return atbash_encode(input);
+  return atbash_encode_decode(input, false);
 }
 
 void test()
@@ -115,24 +127,26 @@ void test()
              "") == 0);
   free(encoded);
 
-
-  encoded=atbash_encode("abc");
+  encoded = atbash_encode("abc");
   assert(strcmp(
              encoded,
              "zyx") == 0);
   free(encoded);
 
-  encoded = atbash_encode("!!gsv !!jfrxp?#? yildm >ulc!");
+  encoded = atbash_decode("!!gsv !!jfrxp?#? yildm >ulc!");
   assert(strcmp(
              encoded,
              "thequickbrownfox") == 0);
   free(encoded);
 
+  encoded = atbash_encode("thequickbrownfox");
+  assert(strcmp(
+             encoded,
+             "gsvjf rxpy ildm ulc") == 0);
 }
 
 int main() //int argc, char *argv[])
 {
 
   test();
-
 }
