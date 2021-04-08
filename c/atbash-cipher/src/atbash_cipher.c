@@ -151,10 +151,10 @@ void test()
   free(encoded);
 }
 
-int main(int argc, char *argv[])
-{
+// int main(int argc, char *argv[])
+// {
 
-  test();
+//   test();
 
-  puts ("woohoo");
-}
+//   puts ("woohoo");
+// }
