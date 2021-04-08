@@ -40,10 +40,10 @@ char ensureLowercase(char c)
 
 char transposeCharAtbash(char c)
 {
-  char lcc = ensureLowercase(c);
+  // char lcc = ensureLowercase(c);
   int foundidx = -1;
 
-  for (int i = 0; i < strlen(ALPHABET); i++)
+  for (int i = 0; i < (int)strlen(ALPHABET); i++)
   {
     if (ALPHABET[i] == c)
     {
@@ -74,7 +74,7 @@ char *atbash_encode_decode(const char *input, bool encoding)
   char *work = calloc(WORK_SIZE, sizeof(char));
 
   int work_idx = 0;
-  for (int i = 0; ((i < strlen(input)) && (i < WORK_SIZE)); i++)
+  for (int i = 0; ((i < (int)strlen(input)) && (i < WORK_SIZE)); i++)
   {
 
     char c = input[i];
@@ -143,10 +143,18 @@ void test()
   assert(strcmp(
              encoded,
              "gsvjf rxpy ildm ulc") == 0);
+  free(encoded);
+
+  encoded = atbash_decode("gsvjf rxpyi ldmul cqfnk hlevi gsvoz abwlt");
+  assert(strcmp(
+             encoded, "thequickbrownfoxjumpsoverthelazydog") == 0);
+  free(encoded);
 }
 
-int main() //int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 
   test();
+
+  puts ("woohoo");
 }
