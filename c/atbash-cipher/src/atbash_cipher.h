@@ -10,6 +10,7 @@ char *atbash_encode_decode(const char *input, bool encoding);
 bool isLowercase(char c);
 bool isUppercase(char c);
 bool isAlphabetic(char c);
+bool isNumeric(char c);
 char ensureLowercase(char c);
 char transposeCharAtbash(char c);
 

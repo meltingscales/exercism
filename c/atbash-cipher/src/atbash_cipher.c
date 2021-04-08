@@ -8,6 +8,11 @@
 static char *ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 static int MAX_ALPHA_POS = 25; //26 total letters in ALPHABET
 
+bool isNumeric(char c)
+{
+  return (c >= '0' && c <= '9');
+}
+
 bool isLowercase(char c)
 {
   return (c >= 'a' && c <= 'z');
@@ -81,17 +86,25 @@ char *atbash_encode_decode(const char *input, bool encoding)
     c = ensureLowercase(c);
     // printf("c = '%c', alphabetic: %d\n",c,isAlphabetic(c));
 
-    if (isAlphabetic(c)) //we only care about alphabetic characters
+    if (isAlphabetic(c) || isNumeric(c)) //we only care about alphabetic/numeric characters, all other
     {
 
       // if we're encoding, then every 5 spaces, add a space
-      if (encoding && (work_idx > 0) && ((work_idx % 5) == 0))
+      if (encoding && (work_idx > 0) && (((work_idx + 1) % 6) == 0))
       {
         work[work_idx] = ' ';
         work_idx++;
       }
-      char transformed = transposeCharAtbash(c);
-      work[work_idx] = transformed;
+
+      if (isNumeric(c)) //we leave numbers alone
+      {
+        work[work_idx] = c;
+      }
+      else
+      {
+        char transformed = transposeCharAtbash(c);
+        work[work_idx] = transformed;
+      }
       // printf("tx '%c' at [%2d] = '%c'\n", c, work_idx, transformed);
       work_idx++; //only increment work_idx if we find an alphabetic character.
     }
@@ -109,52 +122,3 @@ char *atbash_decode(const char *input)
 {
   return atbash_encode_decode(input, false);
 }
-
-void test()
-{
-
-  assert(transposeCharAtbash('a') == 'z');
-  assert(transposeCharAtbash('b') == 'y');
-  assert(transposeCharAtbash('c') == 'x');
-  assert(transposeCharAtbash('d') == 'w');
-  assert(transposeCharAtbash('e') == 'v');
-
-  char *encoded;
-
-  encoded = atbash_encode("");
-  assert(strcmp(
-             encoded,
-             "") == 0);
-  free(encoded);
-
-  encoded = atbash_encode("abc");
-  assert(strcmp(
-             encoded,
-             "zyx") == 0);
-  free(encoded);
-
-  encoded = atbash_decode("!!gsv !!jfrxp?#? yildm >ulc!");
-  assert(strcmp(
-             encoded,
-             "thequickbrownfox") == 0);
-  free(encoded);
-
-  encoded = atbash_encode("thequickbrownfox");
-  assert(strcmp(
-             encoded,
-             "gsvjf rxpy ildm ulc") == 0);
-  free(encoded);
-
-  encoded = atbash_decode("gsvjf rxpyi ldmul cqfnk hlevi gsvoz abwlt");
-  assert(strcmp(
-             encoded, "thequickbrownfoxjumpsoverthelazydog") == 0);
-  free(encoded);
-}
-
-// int main(int argc, char *argv[])
-// {
-
-//   test();
-
-//   puts ("woohoo");
-// }
