@@ -1,6 +1,8 @@
 int main(){
 
-    unsigned char foo = 0xff;
+    unsigned char foo = 0;
+
+    foo--; //underflow
 
     if(foo == ((unsigned char)-1))
     {
