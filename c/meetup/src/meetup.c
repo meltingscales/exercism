@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
+#include <stdbool.h>
 
 size_t NUMBER_OF_DAYS=7;
 char* DAYS[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -29,13 +30,17 @@ int day_to_int(const char *day_of_week)
     return -1;
 }
 
+// There are 7 'teenth' days (13-19) in a month.
+bool is_day_teenth(int day){
+    return (day >= 13 && day <= 19);
+}
+
 int meetup_day_of_month(unsigned int year, unsigned int month, const char *week,
                         const char *day_of_week)
 {
 
     // avoid compiler error :3
     int i = year + month + week[0] + day_of_week[0];
-
 
     assert(day_to_int("Sunday") == 0);
     assert(day_to_int("Monday") == 1);
