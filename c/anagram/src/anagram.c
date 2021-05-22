@@ -5,15 +5,29 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define btoa(x) ((x) ? "true" : "false")
+// Boolean to string.
+const char *btoa(bool x)
+{
+    return (x) ? "true" : "false";
+}
+
+const char *anagram_status_toa(enum anagram_status as){
+    switch(as){
+        case IS_ANAGRAM: return "Is Anagram";
+        case NOT_ANAGRAM: return "Not Anagram";
+        case UNCHECKED: return "Unchecked";
+    }
+    return "Unknown";
+}
 
 void print_candidate(struct candidate c)
 {
-    printf("[Candidate '%s'; isAnagram=%s]\n", c.word, btoa(c.is_anagram));
+    printf("[Candidate '%s'; isAnagram=%s]\n", c.word, anagram_status_toa(c.is_anagram));
 }
 
 // Sort a char* using bubble sort.
-void bubbleSortChar(char* str, size_t stringSize)
+// Shamelessly adapted from StackOverflow int[] bubble sort or something. I forgot.
+void bubbleSortChar(char *str, size_t stringSize)
 {
     char temp;
     size_t i, j;
@@ -28,7 +42,7 @@ void bubbleSortChar(char* str, size_t stringSize)
         // loop through items falling ahead
         for (j = 0; j < stringSize - 1 - i; j++)
         {
-            printf("     Items compared: [ %c, %c ] ", str[j], str[j + 1]);
+            // printf("     Items compared: [ %c, %c ] ", str[j], str[j + 1]);
 
             // check if next item is lesser than current no
             //   swap the items.
@@ -41,11 +55,11 @@ void bubbleSortChar(char* str, size_t stringSize)
                 str[j + 1] = temp;
 
                 swapped = true;
-                printf(" => swapped [%c, %c]\n", str[j], str[j + 1]);
+                // printf(" => swapped [%c, %c]\n", str[j], str[j + 1]);
             }
             else
             {
-                printf(" => not swapped\n");
+                // printf(" => not swapped\n");
             }
         }
 
@@ -56,45 +70,65 @@ void bubbleSortChar(char* str, size_t stringSize)
             break;
         }
 
-        printf("Iteration %d#: \n", (i + 1));
+        // printf("Iteration %d#: \n", (i + 1));
     }
 }
 
 void find_anagrams(const char *subject, struct candidates *candidates)
 {
 
-    //test
+    // //test
 
-    // So that it can be modified, not const. If it were const, I couldn't assign to memory in `bubbleSortChar`.
-    char* foo = calloc(20, sizeof(char));
-    strcpy(foo, "zzcba there");
+    // // So that it can be modified, not const. If it were const, I couldn't assign to memory in `bubbleSortChar`.
+    // char* foo = calloc(20, sizeof(char));
+    // strcpy(foo, "zzcba there");
 
-    printf("before: %s\n",foo);
+    // printf("before: %s\n",foo);
 
-    bubbleSortChar(foo, 5);
+    // bubbleSortChar(foo, 5);
 
-    printf("after: %s\n",foo);
-
-    exit(1);
-    //test
-
+    // printf("after: %s\n",foo);
+    // exit(1);
+    // //test
 
     //We need to make an ordered set of all characters in the subject, as well as in each candidate, in order to compare them easily.
 
     //For example, just use bubble sort to modify the char* so it's sorted by lowest->highest.
 
-    printf("subject is '%s'...\n", subject);
+    printf("subject='%s'...\n", subject);
 
-    size_t size = candidates->count;
+    size_t numCandidates = candidates->count;
 
-    printf("we have %lu candidates ", size);
+    char* sortedSubject = calloc(strlen(subject), sizeof(char));
+    strcpy(sortedSubject, subject);
+    bubbleSortChar(sortedSubject, strlen(sortedSubject));
+
+    printf("sortedSubject='%s'\n",sortedSubject);
+
+    printf("we have %lu candidates ", numCandidates);
 
     for (size_t i = 0; i < candidates->count; i++)
     {
-
         struct candidate c = candidates->candidate[i];
 
         printf("at i=%lu\n", i);
         print_candidate(c);
+
+        // copy word from candidate over to a temp char*
+        char* sortedWord = calloc(strlen(c.word), sizeof(char));
+        strcpy(sortedWord, c.word);
+        bubbleSortChar(sortedWord, strlen(sortedWord));
+
+        printf("sorted candidate word: %s\n",sortedWord);
+
+        //...
+
+        free(sortedWord);
     }
+
+    //...
+
+    free(sortedSubject);
+
+    // return xyz
 }
