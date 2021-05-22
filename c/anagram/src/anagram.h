@@ -5,18 +5,21 @@
 
 #define MAX_STR_LEN 20
 
-enum anagram_status {
+enum anagram_status
+{
    UNCHECKED = -1,
-   NOT_ANAGRAM,
-   IS_ANAGRAM
+   NOT_ANAGRAM = 0,
+   IS_ANAGRAM = 1
 };
 
-struct candidate {
+struct candidate
+{
    enum anagram_status is_anagram;
    const char *word;
 };
 
-struct candidates {
+struct candidates
+{
    struct candidate *candidate;
    size_t count;
 };
