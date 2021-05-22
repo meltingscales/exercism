@@ -10,7 +10,7 @@ CFLAGS += -g
 CFLAGS += -Wextra
 CFLAGS += -pedantic
 CFLAGS += -Werror
-CFLAGS += -Wmissing-declarations
+#CFLAGS += -Wmissing-declarations
 CFLAGS += -DUNITY_SUPPORT_64
 
 ASANFLAGS  = -fsanitize=address
