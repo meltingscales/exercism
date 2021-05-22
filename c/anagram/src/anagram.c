@@ -11,11 +11,16 @@ const char *btoa(bool x)
     return (x) ? "true" : "false";
 }
 
-const char *anagram_status_toa(enum anagram_status as){
-    switch(as){
-        case IS_ANAGRAM: return "Is Anagram";
-        case NOT_ANAGRAM: return "Not Anagram";
-        case UNCHECKED: return "Unchecked";
+const char *anagram_status_toa(enum anagram_status as)
+{
+    switch (as)
+    {
+    case IS_ANAGRAM:
+        return "Is Anagram";
+    case NOT_ANAGRAM:
+        return "Not Anagram";
+    case UNCHECKED:
+        return "Unchecked";
     }
     return "Unknown";
 }
@@ -95,38 +100,52 @@ void find_anagrams(const char *subject, struct candidates *candidates)
 
     //For example, just use bubble sort to modify the char* so it's sorted by lowest->highest.
 
-    printf("subject='%s'...\n", subject);
+    // printf("subject='%s'...\n", subject);
 
     size_t numCandidates = candidates->count;
 
-    char* sortedSubject = calloc(strlen(subject), sizeof(char));
+    char *sortedSubject = calloc(strlen(subject), sizeof(char));
     strcpy(sortedSubject, subject);
     bubbleSortChar(sortedSubject, strlen(sortedSubject));
 
-    printf("sortedSubject='%s'\n",sortedSubject);
+    // printf("sortedSubject='%s'\n", sortedSubject);
 
-    printf("we have %lu candidates ", numCandidates);
+    // printf("we have %lu candidates ", numCandidates);
 
     for (size_t i = 0; i < candidates->count; i++)
     {
         struct candidate c = candidates->candidate[i];
 
-        printf("at i=%lu\n", i);
-        print_candidate(c);
+        // printf("at i=%lu\n", i);
+        // print_candidate(c);
 
         // copy word from candidate over to a temp char*
-        char* sortedWord = calloc(strlen(c.word), sizeof(char));
+        char *sortedWord = calloc(strlen(c.word), sizeof(char));
         strcpy(sortedWord, c.word);
         bubbleSortChar(sortedWord, strlen(sortedWord));
 
-        printf("sorted candidate word: %s\n",sortedWord);
+        // printf("sorted candidate word: %s\n", sortedWord);
 
-        //...
+        if (strlen(sortedWord) != strlen(sortedSubject))
+        { 
+            //lengths must be the same - not sure if strcmp checks this. probably doesn't.
+            c.is_anagram = NOT_ANAGRAM;
+        }
+        else if (strcmp(sortedWord, sortedSubject) == 0)
+        {
+            //This means all characters are the same. It's an anagram.
+            c.is_anagram = IS_ANAGRAM;
+            printf("Found anagram: %s\n",c.word);
+        }
+        else
+        {
+            c.is_anagram = NOT_ANAGRAM;
+        }
+
+        print_candidate(c);
 
         free(sortedWord);
     }
-
-    //...
 
     free(sortedSubject);
 
